@@ -1,6 +1,6 @@
 public class PressureChange {
 	public static void main(String[] arguments) {
-		double fD = .04;
+		// double fD = .04;
 		double diameter = .0254; // D_c
 		double dyanmicViscosity = 8.9E-4; // mu
 		double flowRate = 5E-4; // Q
