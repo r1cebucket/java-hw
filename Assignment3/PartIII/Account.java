@@ -4,12 +4,12 @@ public class Account {
     private int id;
 
     public Account() {
-        this.id = this.account_count++;
+        this.id = account_count++;
     }
 
     public Account(double startingBalance) {
         this.balance = startingBalance;
-        this.id = this.account_count++;
+        this.id = account_count++;
     }
 
     public boolean withdraw(double amount) {
