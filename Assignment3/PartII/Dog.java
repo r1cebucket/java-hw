@@ -61,8 +61,18 @@ public class Dog {
                 dogs[3] = new Dog(1, "owner 3", "breed 3");
                 dogs[4] = new Dog(5, "owner 4", "breed 4");
 
+                // question b
                 System.out.println(hasSameOwner(dogs[0], dogs[1]));
+                // question c
                 System.out.println(avgAge(dogs));
+                // question e
                 System.out.println(dogs[0].toString());
+
+                // question f: creates a Dog instance with the owner “Dexter Morgan”, with the
+                // age “8”, and
+                // with the breed “Corgi”
+                Dog dog_f = new Dog(8, "Dexter Morgan", "Corgi");
+                System.out.println(dog_f.toString());
+
         }
 }
