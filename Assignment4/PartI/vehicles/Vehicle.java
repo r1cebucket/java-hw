@@ -3,9 +3,17 @@ package vehicles;
 public class Vehicle {
 	private int id;
 	private static int nextID = 0;
+
 	private int wheels;
 	private String color;
 	private double cargoSpace;
+
+	public Vehicle(int wheels, String color, double cargoSpace) {
+		this.id = nextID++;
+		this.wheels = wheels;
+		this.color = color;
+		this.cargoSpace = cargoSpace;
+	}
 
 	public int getID() {
 		return this.id;
@@ -35,15 +43,20 @@ public class Vehicle {
 		this.cargoSpace = cargoSpace;
 	}
 
-	public Vehicle() {
-		this.id = Vehicle.nextID++;
+	@Override
+	public String toString() {
+		return "Vehicle [id=" + id + ", wheels=" + wheels + ", color=" + color + ", cargoSpace=" + cargoSpace + "]";
 	}
 
-	public static void main(String[] args) {
-		Vehicle v1 = new Vehicle();
-		Vehicle v2 = new Vehicle();
-		System.out.println(v1.getID());
-		System.out.println(v2.getID());
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof Vehicle)) {
+			return false;
+		}
+		Vehicle v = (Vehicle) o;
+		return v.getWheels() == this.getWheels() && v.getColor() == this.getColor()
+				&& v.getCargoSpace() == this.getCargoSpace();
 	}
-
 }
