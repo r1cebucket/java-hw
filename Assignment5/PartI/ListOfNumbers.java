@@ -119,16 +119,16 @@ public class ListOfNumbers {
     public static void main(String[] args) {
         ListOfNumbers listOfNumbers;
         // a
-        // listOfNumbers = new ListOfNumbers("outFile.txt");
-        // listOfNumbers.createList();
-        // listOfNumbers.writeList();
-        // ListOfNumbers.cat("outFile.txt");
+        listOfNumbers = new ListOfNumbers("outFile.txt");
+        listOfNumbers.createList();
+        listOfNumbers.writeList();
+        ListOfNumbers.cat("outFile.txt");
 
         // b
         listOfNumbers = new ListOfNumbers("outFile.txt");
         listOfNumbers.readList("numberfile.txt");
         listOfNumbers.writeList();
-        // ListOfNumbers.cat("outFile.txt");
+        ListOfNumbers.cat("outFile.txt");
     }
 
 }
