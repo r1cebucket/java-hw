@@ -28,7 +28,7 @@ public class ReadShapeFile {
 			case "Square":
 				return new Square();
 			default:
-				throw new ShapeException();
+				throw new ShapeException(shape);
 		}
 		// return null;
 	}

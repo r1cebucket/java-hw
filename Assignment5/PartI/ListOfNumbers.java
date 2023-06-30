@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ public class ListOfNumbers {
         this.fileName = fileName; // output
     }
 
-    public ArrayList getRdfTripleList() {
+    public ArrayList<RDFTriple<Integer, Integer, Integer>> getRdfTripleList() {
         return this.rdfTripleList;
     }
 
@@ -127,7 +126,7 @@ public class ListOfNumbers {
 
         // b
         listOfNumbers = new ListOfNumbers("outFile.txt");
-        listOfNumbers.readList("../numberfile.txt");
+        listOfNumbers.readList("numberfile.txt");
         listOfNumbers.writeList();
         // ListOfNumbers.cat("outFile.txt");
     }
