@@ -1,14 +1,34 @@
-public class Temp {
-    /** Return the maximum between two objects */
-    public static <E extends Comparable<E>> E max(E o1, E o2) {
-        if (o1.compareTo(o2) > 0)
-            return o1;
-        else
-            return o2;
+public class Fruit {
+    String name;
+
+    Fruit() {
+        this.name = "unknown fruit";
     }
 
-    public static void main() {
-        /** Return the maximum between two objects */
-        System.out.println(Temp.max("1", 2));
+    Fruit(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void toString() {
+        return "Fruit [name=" + this.name + "]";
+    }
+}
+
+public class Apple extends Fruit {
+    Apple() {
+        System.out.println("the name of the fruit is " + this.getName());
+        this.setName("Apple");
+    }
+
+    public void toString() {
+        return "Apple [" + super.toString() + "]";
     }
 }
