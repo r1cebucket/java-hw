@@ -116,15 +116,12 @@ public class Calculator extends JFrame {
 	ActionListener buttonListener = (e) -> {
 		String label = e.getActionCommand();
 		if (label.equals("=")) {
-			if (current == 1) {
+			if (current == 1 || current == 3) {
+				current = 1;
 				return;
 			}
 			if (current == 2 && textArea.getText().equals("")) {
 				textArea.setText(firstTerm + "");
-				current = 1;
-				return;
-			}
-			if (current == 3) {
 				current = 1;
 				return;
 			}
