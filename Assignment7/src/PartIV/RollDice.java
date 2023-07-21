@@ -27,8 +27,8 @@ public class RollDice extends JFrame {
 
 	public RollDice() {
 		JPanel dicePanel = new JPanel(new GridLayout(1, 2));
-		diceLeft = new ImagePanel("./die1.png");
-		diceRight = new ImagePanel("./die1.png");
+		diceLeft = new ImagePanel(1);
+		diceRight = new ImagePanel(1);
 		diceLeft.setAlignmentX(SwingConstants.CENTER);
 		diceRight.setAlignmentX(SwingConstants.CENTER);
 		dicePanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 0, 10));
