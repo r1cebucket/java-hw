@@ -2,11 +2,15 @@ package primes;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadedCountPrimes implements Runnable {
 	private long min;
 	private long max;
-	public static int total = 0;
+	public static Integer total = 0;
+
+	private static Lock countLock = new ReentrantLock();
 
 	public ThreadedCountPrimes(long min, long max) {
 		this.min = min;
@@ -16,21 +20,22 @@ public class ThreadedCountPrimes implements Runnable {
 	@Override
 	public void run() {
 		int count = CountPrimes.numPrimes(min, max);
-		synchronized (this) {
-			ThreadedCountPrimes.total += count;
-		}
+		ThreadedCountPrimes.countLock.lock();
+		ThreadedCountPrimes.total += count;
+		ThreadedCountPrimes.countLock.unlock();
 	}
 
 	public static void main(String[] args) {
 
 		long min = 10_000_000;
 		long max = 20_000_000;
+		max += 1;
 
 		long startTime = System.currentTimeMillis();
 		long numPrimes = CountPrimes.numPrimes(min, max);
 
 		long endTime = System.currentTimeMillis();
-		System.out.println("number of primes from " + min + " to " + max + " is " + numPrimes);
+		System.out.println("number of primes from " + min + " to " + (max - 1) + " is " + numPrimes);
 		System.out.println("this took  " + (endTime - startTime) + " ms ");
 		// System.exit(0);
 
@@ -72,7 +77,7 @@ public class ThreadedCountPrimes implements Runnable {
 
 			endTime = System.currentTimeMillis();
 			System.out.println(
-					"Threaded: number of primes from " + min + " to " + max + " is " + ThreadedCountPrimes.total);
+					"Threaded: number of primes from " + min + " to " + (max - 1) + " is " + ThreadedCountPrimes.total);
 			System.out.println("this took  " + (endTime - startTime) + " ms with the interval of " + interval);
 		}
 	}

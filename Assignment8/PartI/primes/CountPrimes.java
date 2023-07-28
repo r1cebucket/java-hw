@@ -24,7 +24,7 @@ public class CountPrimes {
 
 	static int numPrimes(long from, long to) {
 		int primeCount = 0;
-		for (long i = from; i <= to; i++) {
+		for (long i = from; i < to; i++) {
 			if (isPrime(i)) {
 				primeCount++;
 			}
