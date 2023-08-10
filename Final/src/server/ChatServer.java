@@ -131,10 +131,12 @@ public class ChatServer extends JFrame implements Runnable {
 					// Receive msg from the client
 					int msgLen = inputFromClient.readInt();
 					byte[] msg = inputFromClient.readNBytes(msgLen);
-					System.out.println(new String(msg));
 
 					// broadcast msg to the client
 					for (Map.Entry<String, Socket> entry : connMap.entrySet()) {
+						// System.out.println("send msg: " + new String(msg) + " to " + entry.getKey() +
+						// "\n");
+
 						DataOutputStream outputToClient = new DataOutputStream(
 								entry.getValue().getOutputStream());
 						String broadcastMsg = "(" + new Date() + ")" + username + ": " + new String(msg) + "\n";

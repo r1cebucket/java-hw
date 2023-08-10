@@ -16,13 +16,12 @@ public class ChatClient extends JFrame implements Runnable {
 	JTextField inputField = null;
 	JTextArea textArea = null;
 	Socket socket = null;
-	JButton openButton;
-	JButton closeButton;
 	JButton sendButton;
 	Thread msgGetter;
 
-	public ChatClient() {
+	public ChatClient(Socket socket) {
 		super("Chat Client");
+		this.socket = socket;
 		this.setLayout(new BorderLayout());
 		this.setSize(WIDTH, HEIGHT);
 
@@ -33,11 +32,7 @@ public class ChatClient extends JFrame implements Runnable {
 		this.add(textArea, BorderLayout.NORTH);
 
 		JPanel controlPanel = new JPanel();
-		openButton = new JButton("Open Connection");
-		closeButton = new JButton("Close Connection");
 		sendButton = new JButton("Send");
-		controlPanel.add(openButton);
-		controlPanel.add(closeButton);
 		controlPanel.add(sendButton);
 
 		JPanel operationPanel = new JPanel(new GridLayout(2, 1));
@@ -46,33 +41,8 @@ public class ChatClient extends JFrame implements Runnable {
 		this.add(operationPanel, BorderLayout.SOUTH);
 
 		sendButton.addActionListener(new TextFieldListener());
-		closeButton.addActionListener((e) -> {
-			try {
-				msgGetter.interrupt();
-				socket.close();
-				textArea.append("connection closed\n");
-			} catch (Exception e1) {
-				System.err.println("error");
-			}
-		});
-		openButton.addActionListener(new OpenConnectionListener());
 		msgGetter = new Thread(this);
-	}
-
-	class OpenConnectionListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			try {
-				socket = new Socket("localhost", 9898);
-
-				textArea.append("connected\n");
-				msgGetter.start();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				textArea.append("connection Failure\n");
-			}
-		}
-
+		msgGetter.start();
 	}
 
 	class TextFieldListener implements ActionListener {
@@ -88,6 +58,7 @@ public class ChatClient extends JFrame implements Runnable {
 
 			try {
 				String msg = inputField.getText().trim();
+				inputField.setText("");
 
 				toServer.writeInt(msg.length());
 				toServer.writeBytes(msg);
@@ -108,6 +79,7 @@ public class ChatClient extends JFrame implements Runnable {
 			while (true) {
 				int msgLen = fromServer.readInt();
 				byte[] msg = fromServer.readNBytes(msgLen);
+				// System.out.println("broadcast msg : " + msg + "\n");
 				textArea.append(new String(msg));
 			}
 

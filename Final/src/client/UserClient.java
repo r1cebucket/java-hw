@@ -103,7 +103,7 @@ public class UserClient extends JFrame {
                     case 0: { // success
                         notice.setText("login successfully");
 
-                        ChatClient chatClient = new ChatClient();
+                        ChatClient chatClient = new ChatClient(socket);
                         chatClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                         chatClient.setVisible(true);
                         break;
