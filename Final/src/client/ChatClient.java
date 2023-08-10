@@ -1,4 +1,4 @@
-package chat;
+package client;
 
 import java.io.*;
 import java.net.*;
@@ -114,11 +114,5 @@ public class ChatClient extends JFrame implements Runnable {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-	}
-
-	public static void main(String[] args) {
-		ChatClient chatClient = new ChatClient();
-		chatClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		chatClient.setVisible(true);
 	}
 }

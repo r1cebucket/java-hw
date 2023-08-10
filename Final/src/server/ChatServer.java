@@ -1,4 +1,4 @@
-package chat;
+package server;
 
 import java.io.*;
 import java.net.*;
@@ -6,18 +6,15 @@ import java.util.*;
 
 import javax.swing.*;
 
-import server.UserManager;
-
 public class ChatServer extends JFrame implements Runnable {
-	private static int cliID = 0;
-
 	private static int WIDTH = 400;
 	private static int HEIGHT = 300;
 
 	// Text area for displaying contents
 	JTextArea ta;
 
-	HashMap<Integer, Socket> connMap = new HashMap<>();
+	HashMap<String, Socket> connMap = new HashMap<>();
+	UserManager dao = new UserManager();
 
 	public ChatServer() {
 		super("Chat Server");
@@ -62,34 +59,48 @@ public class ChatServer extends JFrame implements Runnable {
 						socket.getOutputStream());
 				int reqCode = inputFromClient.readInt();
 				switch (reqCode) {
+					case 0: { // send msg
+
+					}
 					case 1: { // login
 						int usernameLen = inputFromClient.readInt();
 						String username = new String(inputFromClient.readNBytes(usernameLen));
 						int passwordLen = inputFromClient.readInt();
 						String password = new String(inputFromClient.readNBytes(passwordLen));
 
-						System.out.println(username + ": " + password);
-						outputToClient.writeInt(0);
+						if (!dao.login(username, password)) {
+							outputToClient.writeInt(-1);
+							ta.append(username + " login failed\n");
+						} else {
+							outputToClient.writeInt(0);
+							ta.append(username + " login success\n");
+							connMap.put(username, socket);
+							// Create and start a new thread for the connection
+							new Thread(new HandleAClient(socket, username)).start();
+						}
+						break;
+					}
+					case 2: { // register
+						int usernameLen = inputFromClient.readInt();
+						String username = new String(inputFromClient.readNBytes(usernameLen));
+						int passwordLen = inputFromClient.readInt();
+						String password = new String(inputFromClient.readNBytes(passwordLen));
+
+						if (!dao.register(username, password)) {
+							outputToClient.writeInt(-1);
+							ta.append(username + " register failed\n");
+						} else {
+							outputToClient.writeInt(0);
+							ta.append(username + " register success\n");
+						}
+
+						break;
+					}
+					default: {
+						ta.append("invalid code\n");
 					}
 				}
 
-				connMap.put(cliID, socket);
-
-				// Increment clientNo
-				cliID++;
-
-				ta.append("Starting thread for client " + (cliID + 1) +
-						" at " + new Date() + '\n');
-
-				// Find the client's host name, and IP address
-				InetAddress inetAddress = socket.getInetAddress();
-				ta.append("Client " + cliID + "'s host name is "
-						+ inetAddress.getHostName() + "\n");
-				ta.append("Client " + cliID + "'s IP Address is "
-						+ inetAddress.getHostAddress() + "\n");
-
-				// Create and start a new thread for the connection
-				new Thread(new HandleAClient(socket, cliID)).start();
 			}
 
 		} catch (IOException ex) {
@@ -100,12 +111,12 @@ public class ChatServer extends JFrame implements Runnable {
 	// Define the thread class for handling new connection
 	class HandleAClient implements Runnable {
 		private Socket socket; // A connected socket
-		// private int clientNum;
+		private String username;
 
 		/** Construct a thread */
-		public HandleAClient(Socket socket, int clientNum) {
+		public HandleAClient(Socket socket, String username) {
 			this.socket = socket;
-			// this.clientNum = clientNum;
+			this.username = username;
 		}
 
 		/** Run a thread */
@@ -123,10 +134,10 @@ public class ChatServer extends JFrame implements Runnable {
 					System.out.println(new String(msg));
 
 					// broadcast msg to the client
-					for (Map.Entry<Integer, Socket> entry : connMap.entrySet()) {
+					for (Map.Entry<String, Socket> entry : connMap.entrySet()) {
 						DataOutputStream outputToClient = new DataOutputStream(
 								entry.getValue().getOutputStream());
-						String broadcastMsg = "(" + new Date() + ")" + cliID + ": " + new String(msg) + "\n";
+						String broadcastMsg = "(" + new Date() + ")" + username + ": " + new String(msg) + "\n";
 						outputToClient.writeInt(broadcastMsg.length());
 						outputToClient.writeBytes(broadcastMsg);
 					}
@@ -141,8 +152,5 @@ public class ChatServer extends JFrame implements Runnable {
 		ChatServer chatServer = new ChatServer();
 		chatServer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		chatServer.setVisible(true);
-
-		UserManager um = new UserManager();
-		System.out.println(um.login("", ""));
 	}
 }

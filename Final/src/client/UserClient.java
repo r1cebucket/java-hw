@@ -1,13 +1,12 @@
-package user;
+package client;
 
 import java.io.*;
 import java.net.*;
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 public class UserClient extends JFrame {
-    private static int WIDTH = 300;
+    private static int WIDTH = 400;
     private static int HEIGHT = 200;
 
     DataOutputStream toServer = null;
@@ -44,7 +43,7 @@ public class UserClient extends JFrame {
         buttonPanel.add(registerButton);
         this.add(buttonPanel, BorderLayout.SOUTH);
 
-        loginButton.addActionListener((e) -> {
+        registerButton.addActionListener((e) -> {
             try {
                 socket = new Socket("localhost", 9898);
 
@@ -53,9 +52,8 @@ public class UserClient extends JFrame {
                 // Create an output stream to send data to the server
                 toServer = new DataOutputStream(socket.getOutputStream());
 
-                String type = "login";
-                toServer.writeInt(type.length());
-                toServer.writeBytes(type);
+                int reqCode = 2; // register req
+                toServer.writeInt(reqCode);
 
                 String username = usernameField.getText().trim();
                 toServer.writeInt(username.length());
@@ -68,9 +66,11 @@ public class UserClient extends JFrame {
                 int respCode = fromServer.readInt();
                 switch (respCode) {
                     case 0: { // success
-
+                        notice.setText("register successfully");
+                        break;
                     }
                     default: { // failed
+                        notice.setText(respCode + ": register failed, please try to user another username");
                     }
                 }
             } catch (Exception e1) {
@@ -97,69 +97,26 @@ public class UserClient extends JFrame {
                 String password = passwordField.getText().trim();
                 toServer.writeInt(password.length());
                 toServer.writeBytes(password);
+
+                int respCode = fromServer.readInt();
+                switch (respCode) {
+                    case 0: { // success
+                        notice.setText("login successfully");
+
+                        ChatClient chatClient = new ChatClient();
+                        chatClient.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        chatClient.setVisible(true);
+                        break;
+                    }
+                    default: { // failed
+                        notice.setText(reqCode + ": login failed, the username or password is incorrect");
+                    }
+                }
             } catch (Exception e1) {
                 System.err.println("error");
             }
         });
-        // openButton.addActionListener(new OpenConnectionListener());
-        // msgGetter = new Thread(this);
     }
-
-    // class OpenConnectionListener implements ActionListener {
-    // @Override
-    // public void actionPerformed(ActionEvent e) {
-    // try {
-    // socket = new Socket("localhost", 9898);
-    // textArea.append("connected\n");
-    // msgGetter.start();
-    // } catch (IOException e1) {
-    // e1.printStackTrace();
-    // textArea.append("connection Failure\n");
-    // }
-    // }
-
-    // }
-
-    // class TextFieldListener implements ActionListener {
-    // @Override
-    // public void actionPerformed(ActionEvent e) {
-    // // get io stream
-    // try {
-    // // Create an output stream to send data to the server
-    // toServer = new DataOutputStream(socket.getOutputStream());
-    // } catch (IOException ex) {
-    // textArea.append(ex.toString() + '\n');
-    // }
-
-    // try {
-    // String msg = usernameField.getText().trim();
-
-    // toServer.writeInt(msg.length());
-    // toServer.writeBytes(msg);
-    // toServer.flush();
-    // } catch (IOException ex) {
-    // System.err.println(ex);
-    // }
-    // }
-    // }
-
-    // public void run() {
-    // // get msg from server
-    // try {
-    // // Create an input stream to receive data from the server
-    // fromServer = new DataInputStream(socket.getInputStream());
-    // // Create an output stream to send data to the server
-    // toServer = new DataOutputStream(socket.getOutputStream());
-    // while (true) {
-    // int msgLen = fromServer.readInt();
-    // byte[] msg = fromServer.readNBytes(msgLen);
-    // textArea.append(new String(msg));
-    // }
-
-    // } catch (IOException ex) {
-    // ex.printStackTrace();
-    // }
-    // }
 
     public static void main(String[] args) {
         UserClient loginClient = new UserClient();
